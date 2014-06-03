@@ -10,6 +10,7 @@ Instructions:
 
 
 NOTE: "Simulator.py" should be in the same folder with "SimpleTest.py"
+
 NOTE2: "SimpleTest.py" tests are really short and easy to follow. If you experience any "diff" errors, please check manually first and make sure what output you need to expect from the commands.
 
 NOTE3: Random tests still to come :)
