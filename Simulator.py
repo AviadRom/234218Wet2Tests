@@ -183,10 +183,11 @@ class Wet2Sim(object):
         return ret[:len(ret)-1]
 
     def Quit(self):
-        self._init = False
-        del self.candidates
-        del self.unionfind
-        del self.voters
+        if self._init:
+            self._init = False
+            del self.candidates
+            del self.unionfind
+            del self.voters
         return 'Quit done.\n'
 
 
