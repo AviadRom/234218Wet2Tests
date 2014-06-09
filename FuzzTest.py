@@ -79,14 +79,15 @@ class Wet2TestCases(unittest.TestCase):
 
     @emit_test_name
     def testPureFuzz(self):
-        for _ in xrange(1000):
+        self.sp.Init(random.randint(1, 100))
+        for _ in xrange(10000):
             action = random.randint(1, 80)
-            if action < 10:
+            if action < 5:
                 self.sp.Init(random.randint(1, 100))
             elif action < 50:
                 self.sp.Vote(random.randint(-100, 1000),
                              random.randint(-10, 100))
-            elif action < 70:
+            elif action < 75:
                 self.sp.SignAgreement(random.randint(-10, 100),
                                       random.randint(-10, 100))
             else:
@@ -97,6 +98,6 @@ class Wet2TestCases(unittest.TestCase):
 if __name__ == '__main__':
     timestamp = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
     TEST_OUTPUT_PATH = os.path.join(os.getcwd(), 'test-output',
-                                    'simple', timestamp)
+                                    'fuzz', timestamp)
     os.makedirs(TEST_OUTPUT_PATH)
     unittest.main()
