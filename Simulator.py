@@ -64,15 +64,17 @@ class UnionFind(object):
                 return
 
 
-def assertInit(f):
-    @functools.wraps(f)
-    def wrapper(*args, **kwargs):
-        self = args[0]
-        if (not self._init):
-            return 'Vote: Invalid_input\n'
-        else:
-            return f(*args, **kwargs)
-    return wrapper
+def assertInit(name):
+    def decorator(f):
+        @functools.wraps(f)
+        def wrapper(*args, **kwargs):
+            self = args[0]
+            if (not self._init):
+                return '%s: Invalid_input\n' % name
+            else:
+                return f(*args, **kwargs)
+        return wrapper
+    return decorator
 
 
 class Wet2Sim(object):
@@ -102,7 +104,7 @@ class Wet2Sim(object):
         self._init = True
         return 'Init done.\n'
 
-    @assertInit
+    @assertInit('Vote')
     def Vote(self, voter, candidate):
         if voter < 0 or candidate < 0 or candidate >= len(self.candidates):
             return 'Vote: Invalid_input\n'
@@ -113,7 +115,7 @@ class Wet2Sim(object):
         self.unionfind.updateCandidate(candidate, self.candidates[candidate].numOfVotes)
         return 'Vote: Success\n'
 
-    @assertInit
+    @assertInit('SignAgreement')
     def SignAgreement(self, cand1, cand2):
         if cand1 < 0 or cand2 < 0 or cand1 >= len(self.candidates) or cand2 >= len(self.candidates):
             return 'SignAgreement: Invalid_input\n'
@@ -126,7 +128,7 @@ class Wet2Sim(object):
         self.unionfind.union(cand1, cand2)
         return 'SignAgreement: Success\n'
 
-    @assertInit
+    @assertInit('CampLeader')
     def CampLeader(self, cand):
         if cand < 0 or cand >= len(self.candidates):
             return 'CampLeader: Invalid_input\n'
@@ -164,7 +166,7 @@ class Wet2Sim(object):
             del candCopy[max_index]
         return ret
 
-    @assertInit
+    @assertInit('CurrentRanking')
     def CurrentRanking(self):
         sortedCandidates = self.sortCandidates(self.candidates)
         camps = []
