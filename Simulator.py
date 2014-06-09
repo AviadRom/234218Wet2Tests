@@ -1,5 +1,6 @@
 #!/usr/bin/python
 
+import functools
 import os
 import subprocess
 import threading
@@ -62,6 +63,18 @@ class UnionFind(object):
                 self.sets[elemSet].members[i].set_num_of_votes(votes)
                 return
 
+
+def assertInit(f):
+    @functools.wraps(f)
+    def wrapper(*args, **kwargs):
+        self = args[0]
+        if (not self._init):
+            return 'Vote: Invalid_input\n'
+        else:
+            return f(*args, **kwargs)
+    return wrapper
+
+
 class Wet2Sim(object):
     def __init__(self, *args, **kwargs):
         self._init = False
@@ -89,6 +102,7 @@ class Wet2Sim(object):
         self._init = True
         return 'Init done.\n'
 
+    @assertInit
     def Vote(self, voter, candidate):
         if voter < 0 or candidate < 0 or candidate >= len(self.candidates):
             return 'Vote: Invalid_input\n'
@@ -99,6 +113,7 @@ class Wet2Sim(object):
         self.unionfind.updateCandidate(candidate, self.candidates[candidate].numOfVotes)
         return 'Vote: Success\n'
 
+    @assertInit
     def SignAgreement(self, cand1, cand2):
         if cand1 < 0 or cand2 < 0 or cand1 >= len(self.candidates) or cand2 >= len(self.candidates):
             return 'SignAgreement: Invalid_input\n'
@@ -111,6 +126,7 @@ class Wet2Sim(object):
         self.unionfind.union(cand1, cand2)
         return 'SignAgreement: Success\n'
 
+    @assertInit
     def CampLeader(self, cand):
         if cand < 0 or cand >= len(self.candidates):
             return 'CampLeader: Invalid_input\n'
@@ -148,6 +164,7 @@ class Wet2Sim(object):
             del candCopy[max_index]
         return ret
 
+    @assertInit
     def CurrentRanking(self):
         sortedCandidates = self.sortCandidates(self.candidates)
         camps = []
