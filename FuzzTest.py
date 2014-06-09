@@ -3,6 +3,7 @@
 import datetime
 import functools
 import os
+import random
 import unittest
 import Simulator as sim
 
@@ -45,67 +46,58 @@ class Wet2TestCases(unittest.TestCase):
         del self.sp
 
     @emit_test_name
-    def testInitOnce(self):
+    def testAgreeVote(self):
         self.sp.Init(10)
 
-    @emit_test_name
-    def testInitTwice(self):
-        self.sp.Init(10)
-        self.sp.Init(123)
+        for i in xrange(6):
+            self.sp.SignAgreement(random.randint(0, 9), random.randint(0, 9))
+            self.sp.CurrentRanking()
 
-    @emit_test_name
-    def testVote(self):
-        self.sp.Init(10)
-        self.sp.Vote(1, 2)
+        for i in xrange(1000):
+            self.sp.Vote(10 + i, random.randint(0, 9))
+            self.sp.CurrentRanking()
 
-    @emit_test_name
-    def testVoteTwiceSameVoter(self):
-        self.sp.Init(10)
-        self.sp.Vote(1, 2)
-        self.sp.Vote(1, 2)
-
-    @emit_test_name
-    def testAdd100Votes(self):
-        self.sp.Init(10)
-        for i in xrange(100):
-            self.sp.Vote(10 * i, 1)
-
-    @emit_test_name
-    def testSignAgreement(self):
-        self.sp.Init(10)
-        self.sp.SignAgreement(-1, 2)
-        self.sp.SignAgreement(1, 2)
-        self.sp.SignAgreement(1, 2)
-
-    @emit_test_name
-    def testCampLeader(self):
-        self.sp.Init(10)
-        self.sp.CampLeader(-1)
-        self.sp.CampLeader(10)
-        self.sp.CampLeader(5)
-
-    @emit_test_name
-    def testCampLeaderAfterAgreement(self):
-        self.sp.Init(5)
-        self.sp.SignAgreement(0,1)
-        self.sp.Vote(0, 0)
-        self.sp.SignAgreement(1,2)
-        self.sp.SignAgreement(0,1)
-
-    @emit_test_name
-    def testCurrentRanking(self):
-        self.sp.Init(5)
         self.sp.CurrentRanking()
-        self.sp.Vote(0, 0)
-        for i in range(10):
-            self.sp.Vote((i+3), (i % 2)+1)
+
+    @emit_test_name
+    def testVoteAgreeVote(self):
+        self.sp.Init(10)
+
+        for i in xrange(10):
+            self.sp.Vote(i, random.randint(0, 10))
+            self.sp.CurrentRanking()
+
+        for i in xrange(20):
+            self.sp.SignAgreement(random.randint(0, 9), random.randint(0, 9))
+            self.sp.CurrentRanking()
+
+        for i in xrange(1000):
+            self.sp.Vote(10 + i, random.randint(0, 9))
+            self.sp.CurrentRanking()
+
         self.sp.CurrentRanking()
-        self.sp.SignAgreement(2, 0)
-        self.sp.CurrentRanking()
+
+    @emit_test_name
+    def testPureFuzz(self):
+        self.sp.Init(random.randint(1, 100))
+        for _ in xrange(10000):
+            action = random.randint(1, 80)
+            if action < 5:
+                self.sp.Init(random.randint(1, 100))
+            elif action < 50:
+                self.sp.Vote(random.randint(-100, 1000),
+                             random.randint(-10, 100))
+            elif action < 75:
+                self.sp.SignAgreement(random.randint(-10, 100),
+                                      random.randint(-10, 100))
+            else:
+                self.sp.Quit()
+            self.sp.CurrentRanking()
+
 
 if __name__ == '__main__':
     timestamp = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
     TEST_OUTPUT_PATH = os.path.join(os.getcwd(), 'test-output',
-                                    'simple', timestamp)
+                                    'fuzz', timestamp)
     os.makedirs(TEST_OUTPUT_PATH)
     unittest.main()
