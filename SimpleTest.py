@@ -103,6 +103,121 @@ class Wet2TestCases(unittest.TestCase):
         self.sp.SignAgreement(2, 0)
         self.sp.CurrentRanking()
 
+    @emit_test_name
+    def testAllNoInit(self):
+        self.sp.Vote(1, 1)
+        self.sp.SignAgreement(1, 13)
+        self.sp.CurrentRanking()
+        self.sp.CampLeader(222)
+
+    @emit_test_name
+    def testVoteNegativeVoter(self):
+        self.sp.Init(10)
+        self.sp.Vote(-1, 1)
+
+    @emit_test_name
+    def testVoteNegativeCandidate(self):
+        self.sp.Init(10)
+        self.sp.Vote(1, -10)
+
+    @emit_test_name
+    def testVoteNegitiveBoth(self):
+        self.sp.Init(10)
+        self.sp.Vote(-1, -2)
+
+    @emit_test_name
+    def testVoteInvalidCandidate(self):
+        self.sp.Init(10)
+        self.sp.Vote(1, 20)
+
+    @emit_test_name
+    def testVoteInvalidBoth(self):
+        self.sp.Init(10)
+        self.sp.Vote(1, 1)
+        self.sp.Vote(1, -10)
+
+    @emit_test_name
+    def testSignFirstNegative(self):
+        self.sp.Init(10)
+        self.sp.SignAgreement(-1, 1)
+
+    @emit_test_name
+    def testSignSecondNegative(self):
+        self.sp.Init(10)
+        self.sp.SignAgreement(1, -1)
+
+    @emit_test_name
+    def testSignFirstInvalid(self):
+        self.sp.Init(10)
+        self.sp.SignAgreement(-1, 1)
+
+    @emit_test_name
+    def testSignSecondInvalid(self):
+        self.sp.Init(10)
+        self.sp.SignAgreement(1, -1)
+
+    @emit_test_name
+    def testSignNegativeInvalid(self):
+        self.sp.Init(10)
+        self.sp.SignAgreement(-1, 11)
+
+    @emit_test_name
+    def testSignInvalidNegative(self):
+        self.sp.Init(10)
+        self.sp.SignAgreement(11, -1)
+
+    @emit_test_name
+    def testSignNegiativeIneligible(self):
+        self.sp.Init(10)
+        self.sp.Vote(1, 1)
+        self.sp.SignAgreement(0, 1)
+        self.sp.SignAgreement(-1, 0)
+
+    @emit_test_name
+    def testSignIneligibleInvalid(self):
+        self.sp.Init(10)
+        self.sp.Vote(1, 1)
+        self.sp.SignAgreement(0, 1)
+        self.sp.SignAgreement(0, 11)
+
+    @emit_test_name
+    def testSignInvalidIneligible(self):
+        self.sp.Init(10)
+        self.sp.Vote(1, 1)
+        self.sp.SignAgreement(0, 1)
+        self.sp.SignAgreement(11, 0)
+
+    @emit_test_name
+    def testSignIneligibleNegative(self):
+        self.sp.Init(10)
+        self.sp.Vote(1, 1)
+        self.sp.SignAgreement(0, 1)
+        self.sp.SignAgreement(0, -1)
+
+    @emit_test_name
+    def testFirstIneligible(self):
+        self.sp.Init(10)
+        self.sp.Vote(1, 1)
+        self.sp.SignAgreement(0, 1)
+        self.sp.SignAgreement(0, 2)
+
+    @emit_test_name
+    def testSecondIneligible(self):
+        self.sp.Init(10)
+        self.sp.Vote(1, 1)
+        self.sp.SignAgreement(0, 1)
+        self.sp.SignAgreement(2, 0)
+
+    @emit_test_name
+    def testCampLeaderNegative(self):
+        self.sp.Init(10)
+        self.sp.CampLeader(-1)
+
+    @emit_test_name
+    def testCampLeaderInvalid(self):
+        self.sp.Init(10)
+        self.sp.CampLeader(111)
+
 if __name__ == '__main__':
     timestamp = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
     TEST_OUTPUT_PATH = os.path.join(os.getcwd(), 'test-output',
